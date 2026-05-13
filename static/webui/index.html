@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DouK-Downloader Web UI</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: white;
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 14px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .tab {
+            padding: 8px 16px;
+            cursor: pointer;
+            border-radius: 6px;
+            color: #666;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .tab:hover {
+            background: #f5f5f5;
+        }
+
+        .tab.active {
+            background: linear-gradient(135deg, #ff2d55 0%, #ff6b6b 100%);
+            color: white;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 6px;
+            color: #333;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.2s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #ff2d55;
+        }
+
+        .form-select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            background: white;
+        }
+
+        .inline-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .btn {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #ff2d55 0%, #ff6b6b 100%);
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(255, 45, 85, 0.3);
+        }
+
+        .btn-primary:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: #f5f5f5;
+            color: #666;
+            margin-left: 10px;
+        }
+
+        .btn-secondary:hover {
+            background: #e0e0e0;
+        }
+
+        .progress-section {
+            margin-top: 24px;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .progress-title {
+            font-size: 14px;
+            color: #333;
+        }
+
+        .progress-stats {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: #eee;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff2d55, #ff6b6b);
+            transition: width 0.3s ease;
+            border-radius: 4px;
+        }
+
+        .progress-message {
+            margin-top: 12px;
+            padding: 12px;
+            background: #f9f9f9;
+            border-radius: 6px;
+            font-size: 13px;
+            color: #666;
+        }
+
+        .result-card {
+            margin-top: 20px;
+            padding: 16px;
+            border-radius: 8px;
+        }
+
+        .result-success {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .result-error {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        .result-title {
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .result-details {
+            font-size: 13px;
+        }
+
+        .settings-grid {
+            display: grid;
+            gap: 16px;
+        }
+
+        .settings-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            background: #f9f9f9;
+            border-radius: 6px;
+        }
+
+        .settings-label {
+            color: #333;
+            font-weight: 500;
+        }
+
+        .settings-value {
+            color: #666;
+        }
+
+        .settings-status {
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        .status-ok {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .status-warning {
+            background: #fff3e0;
+            color: #ef6c00;
+        }
+
+        .status-error {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        .status-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 12px 20px;
+            font-size: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .dot-green {
+            background: #4caf50;
+        }
+
+        .dot-red {
+            background: #f44336;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #999;
+        }
+
+        .empty-state p {
+            margin-top: 10px;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #fff;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .account-info {
+            margin-bottom: 20px;
+            padding: 16px;
+            background: #f0f7ff;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .account-info.show {
+            display: block;
+        }
+
+        .account-info-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .account-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            margin-right: 12px;
+        }
+
+        .account-info-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .account-name {
+            font-size: 18px;
+            font-weight: 500;
+        }
+
+        .account-id {
+            font-size: 12px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div id="app" class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>DouK-Downloader Web UI</h1>
+            <p>抖音/TikTok 数据采集工具 - 图形化界面</p>
+        </div>
+
+        <!-- Main Content -->
+        <div class="card">
+            <!-- Tabs -->
+            <div class="tabs">
+                <div class="tab" :class="{ active: activeTab === 'account' }" @click="activeTab = 'account'">
+                    账号下载
+                </div>
+                <div class="tab" :class="{ active: activeTab === 'detail' }" @click="activeTab = 'detail'">
+                    作品下载
+                </div>
+                <div class="tab" :class="{ active: activeTab === 'settings' }" @click="activeTab = 'settings'">
+                    设置
+                </div>
+                <div class="tab" :class="{ active: activeTab === 'about' }" @click="activeTab = 'about'">
+                    关于
+                </div>
+            </div>
+
+            <!-- Account Download Tab -->
+            <div v-if="activeTab === 'account'">
+                <!-- Account Info Preview -->
+                <div class="account-info" :class="{ show: accountInfo }" v-if="accountInfo">
+                    <div class="account-info-header">
+                        <img class="account-avatar" :src="accountInfo.avatar" v-if="accountInfo.avatar" />
+                        <div>
+                            <div class="account-name">{{ accountInfo.nickname }}</div>
+                            <div class="account-id">@{{ accountInfo.unique_id || accountInfo.sec_user_id }}</div>
+                        </div>
+                    </div>
+                    <div class="account-info-row">
+                        <span>粉丝数</span>
+                        <span>{{ formatNumber(accountInfo.follower_count) }}</span>
+                    </div>
+                    <div class="account-info-row">
+                        <span>关注数</span>
+                        <span>{{ formatNumber(accountInfo.following_count) }}</span>
+                    </div>
+                    <div class="account-info-row">
+                        <span>作品数</span>
+                        <span>{{ formatNumber(accountInfo.aweme_count) }}</span>
+                    </div>
+                </div>
+
+                <!-- Account Download Form -->
+                <div class="form-group">
+                    <label class="form-label">账号主页链接</label>
+                    <input
+                        class="form-input"
+                        v-model="accountForm.url"
+                        placeholder="https://www.douyin.com/user/MS4wLjABAAAA..."
+                        @input="clearAccountInfo"
+                    />
+                </div>
+
+                <div class="inline-form">
+                    <div class="form-group">
+                        <label class="form-label">作品类型</label>
+                        <select class="form-select" v-model="accountForm.tab">
+                            <option value="post">发布作品</option>
+                            <option value="favorite">喜欢作品</option>
+                            <option value="collection">收藏作品</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">自定义标识</label>
+                        <input class="form-input" v-model="accountForm.mark" placeholder="可选，用于命名" />
+                    </div>
+                </div>
+
+                <div class="inline-form">
+                    <div class="form-group">
+                        <label class="form-label">最早日期（可选）</label>
+                        <input class="form-input" type="date" v-model="accountForm.earliest" />
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">最晚日期（可选）</label>
+                        <input class="form-input" type="date" v-model="accountForm.latest" />
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn btn-secondary" @click="getAccountInfo" :disabled="!accountForm.url || loading">
+                        获取账号信息
+                    </button>
+                    <button class="btn btn-primary" @click="downloadAccount" :disabled="!accountForm.url || loading">
+                        <span v-if="loading" class="loading-spinner"></span>
+                        <span v-else>开始下载</span>
+                    </button>
+                </div>
+
+                <!-- Progress Section -->
+                <div class="progress-section" v-if="progress.status !== 'idle'">
+                    <div class="progress-header">
+                        <span class="progress-title">下载进度</span>
+                        <span class="progress-stats">
+                            {{ progress.current }} / {{ progress.total }}
+                        </span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" :style="{ width: progressPercent }"></div>
+                    </div>
+                    <div class="progress-message">
+                        <div>{{ progress.message }}</div>
+                        <div style="margin-top: 8px;">
+                            <span style="color: #2e7d32;">成功: {{ progress.success }}</span>
+                            <span style="color: #c62828; margin-left: 12px;">失败: {{ progress.failed }}</span>
+                            <span style="color: #666; margin-left: 12px;">跳过: {{ progress.skipped }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Result -->
+                <div class="result-card" :class="accountResult?.success ? 'result-success' : 'result-error'" v-if="accountResult">
+                    <div class="result-title">{{ accountResult.message }}</div>
+                    <div class="result-details" v-if="accountResult.data">
+                        <div v-if="accountResult.data.nickname">账号: {{ accountResult.data.nickname }}</div>
+                        <div v-if="accountResult.data.save_path">保存路径: {{ accountResult.data.save_path }}</div>
+                        <div v-if="accountResult.data.downloaded">已下载: {{ accountResult.data.downloaded }} 个作品</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Detail Download Tab -->
+            <div v-if="activeTab === 'detail'">
+                <div class="form-group">
+                    <label class="form-label">作品链接</label>
+                    <input
+                        class="form-input"
+                        v-model="detailForm.url"
+                        placeholder="https://v.douyin.com/xxx/ 或作品分享链接"
+                    />
+                </div>
+
+                <button class="btn btn-primary" @click="downloadDetail" :disabled="!detailForm.url || loading">
+                    <span v-if="loading" class="loading-spinner"></span>
+                    <span v-else>开始下载</span>
+                </button>
+
+                <!-- Progress Section -->
+                <div class="progress-section" v-if="progress.status !== 'idle'">
+                    <div class="progress-header">
+                        <span class="progress-title">下载进度</span>
+                        <span class="progress-stats">
+                            {{ progress.current }} / {{ progress.total }}
+                        </span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" :style="{ width: progressPercent }"></div>
+                    </div>
+                    <div class="progress-message">
+                        <div>{{ progress.message }}</div>
+                        <div style="margin-top: 8px;">
+                            <span style="color: #2e7d32;">成功: {{ progress.success }}</span>
+                            <span style="color: #c62828; margin-left: 12px;">失败: {{ progress.failed }}</span>
+                            <span style="color: #666; margin-left: 12px;">跳过: {{ progress.skipped }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Result -->
+                <div class="result-card" :class="detailResult?.success ? 'result-success' : 'result-error'" v-if="detailResult">
+                    <div class="result-title">{{ detailResult.message }}</div>
+                    <div class="result-details" v-if="detailResult.data">
+                        <div v-if="detailResult.data.save_path">保存路径: {{ detailResult.data.save_path }}</div>
+                        <div v-if="detailResult.data.works?.length">
+                            已下载作品:
+                            <ul style="margin-top: 8px; padding-left: 20px;">
+                                <li v-for="work in detailResult.data.works" :key="work.id">
+                                    {{ work.title || work.id }}
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings Tab -->
+            <div v-if="activeTab === 'settings'">
+                <div class="settings-grid">
+                    <div class="settings-item">
+                        <span class="settings-label">抖音 Cookie</span>
+                        <span class="settings-status" :class="cookieStatus.douyin ? 'status-ok' : 'status-warning'">
+                            {{ cookieStatus.douyin ? '已配置' : '未配置' }}
+                        </span>
+                    </div>
+                    <div class="settings-item">
+                        <span class="settings-label">TikTok Cookie</span>
+                        <span class="settings-status" :class="cookieStatus.tiktok ? 'status-ok' : 'status-warning'">
+                            {{ cookieStatus.tiktok ? '已配置' : '未配置' }}
+                        </span>
+                    </div>
+                    <div class="settings-item">
+                        <span class="settings-label">保存目录</span>
+                        <span class="settings-value">{{ settings.folder_name || 'Download' }}</span>
+                    </div>
+                    <div class="settings-item">
+                        <span class="settings-label">根目录</span>
+                        <span class="settings-value">{{ settings.root || '项目目录' }}</span>
+                    </div>
+                    <div class="settings-item">
+                        <span class="settings-label">自动下载文件</span>
+                        <span class="settings-value">{{ settings.download ? '开启' : '关闭' }}</span>
+                    </div>
+                    <div class="settings-item">
+                        <span class="settings-label">文件名格式</span>
+                        <span class="settings-value">{{ settings.name_format || '默认格式' }}</span>
+                    </div>
+                </div>
+
+                <div class="empty-state" style="margin-top: 20px;">
+                    <p>如需修改配置，请编辑 settings.json 文件或使用 CLI 模式</p>
+                </div>
+            </div>
+
+            <!-- About Tab -->
+            <div v-if="activeTab === 'about'">
+                <div class="settings-grid">
+                    <div class="settings-item">
+                        <span class="settings-label">项目名称</span>
+                        <span class="settings-value">DouK-Downloader</span>
+                    </div>
+                    <div class="settings-item">
+                        <span class="settings-label">版本</span>
+                        <span class="settings-value">5.8 Beta</span>
+                    </div>
+                    <div class="settings-item">
+                        <span class="settings-label">项目地址</span>
+                        <span class="settings-value">
+                            <a href="https://github.com/JoeanAmier/TikTokDownloader" target="_blank" style="color: #ff2d55;">
+                                GitHub
+                            </a>
+                        </span>
+                    </div>
+                    <div class="settings-item">
+                        <span class="settings-label">项目文档</span>
+                        <span class="settings-value">
+                            <a href="https://github.com/JoeanAmier/TikTokDownloader/wiki" target="_blank" style="color: #ff2d55;">
+                                Wiki
+                            </a>
+                        </span>
+                    </div>
+                </div>
+
+                <div class="empty-state" style="margin-top: 20px;">
+                    <p>Web UI 模式提供账号批量下载和单个作品下载功能</p>
+                    <p style="color: #999;">保存目录和下载记录与 CLI 模式共用，保持数据一致性</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Status Bar -->
+    <div class="status-bar">
+        <div class="status-item">
+            <span class="status-dot" :class="cookieStatus.douyin ? 'dot-green' : 'dot-red'"></span>
+            <span>抖音 Cookie: {{ cookieStatus.douyin ? '已配置' : '未配置' }}</span>
+        </div>
+        <div class="status-item">
+            <span>保存目录: {{ settings.folder_name || 'Download' }}</span>
+        </div>
+        <div class="status-item">
+            <span>Web UI v1.0</span>
+        </div>
+    </div>
+
+    <script>
+    const { createApp, ref, computed, onMounted, watch } = Vue;
+
+    createApp({
+        setup() {
+            const activeTab = ref('account');
+            const loading = ref(false);
+
+            const progress = ref({
+                status: 'idle',
+                total: 0,
+                current: 0,
+                success: 0,
+                failed: 0,
+                skipped: 0,
+                message: ''
+            });
+
+            const cookieStatus = ref({ douyin: false, tiktok: false });
+            const settings = ref({});
+
+            const accountForm = ref({
+                url: '',
+                tab: 'post',
+                mark: '',
+                earliest: '',
+                latest: '',
+                pages: 0
+            });
+
+            const detailForm = ref({ url: '' });
+            const accountInfo = ref(null);
+            const accountResult = ref(null);
+            const detailResult = ref(null);
+
+            const progressPercent = computed(() => {
+                if (progress.value.total === 0) return '0%';
+                return Math.min(((progress.value.current / progress.value.total) * 100), 100) + '%';
+            });
+
+            const formatNumber = (num) => {
+                if (!num) return '0';
+                if (num >= 10000) {
+                    return (num / 10000).toFixed(1) + 'w';
+                }
+                return num.toString();
+            };
+
+            const clearAccountInfo = () => {
+                accountInfo.value = null;
+                accountResult.value = null;
+            };
+
+            const getAccountInfo = async () => {
+                if (!accountForm.value.url) return;
+
+                loading.value = true;
+                accountInfo.value = null;
+
+                try {
+                    const res = await fetch(`/api/account/info?url=${encodeURIComponent(accountForm.value.url)}`);
+                    const data = await res.json();
+
+                    if (data.success) {
+                        accountInfo.value = data.data;
+                    } else {
+                        alert(data.message);
+                    }
+                } catch (e) {
+                    alert('获取账号信息失败: ' + e.message);
+                }
+
+                loading.value = false;
+            };
+
+            const downloadAccount = async () => {
+                if (!accountForm.value.url) {
+                    accountResult.value = { success: false, message: '请输入账号链接' };
+                    return;
+                }
+
+                loading.value = true;
+                progress.value = {
+                    status: 'running',
+                    total: 0,
+                    current: 0,
+                    success: 0,
+                    failed: 0,
+                    skipped: 0,
+                    message: '正在启动下载...'
+                };
+                accountResult.value = null;
+
+                try {
+                    const res = await fetch('/api/account/download', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(accountForm.value)
+                    });
+                    const data = await res.json();
+                    accountResult.value = data;
+
+                    if (data.data) {
+                        progress.value = {
+                            ...progress.value,
+                            total: data.data.total || 0,
+                            current: data.data.downloaded + data.data.failed + data.data.skipped,
+                            success: data.data.downloaded || 0,
+                            failed: data.data.failed || 0,
+                            skipped: data.data.skipped || 0,
+                            status: 'completed',
+                            message: data.message
+                        };
+                    }
+                } catch (e) {
+                    accountResult.value = { success: false, message: '请求失败: ' + e.message };
+                    progress.value.status = 'error';
+                    progress.value.message = e.message;
+                }
+
+                loading.value = false;
+            };
+
+            const downloadDetail = async () => {
+                if (!detailForm.value.url) {
+                    detailResult.value = { success: false, message: '请输入作品链接' };
+                    return;
+                }
+
+                loading.value = true;
+                progress.value = {
+                    status: 'running',
+                    total: 0,
+                    current: 0,
+                    success: 0,
+                    failed: 0,
+                    skipped: 0,
+                    message: '正在启动下载...'
+                };
+                detailResult.value = null;
+
+                try {
+                    const res = await fetch('/api/detail/download', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(detailForm.value)
+                    });
+                    const data = await res.json();
+                    detailResult.value = data;
+
+                    if (data.data) {
+                        progress.value = {
+                            ...progress.value,
+                            total: data.data.total || 0,
+                            current: data.data.downloaded + data.data.failed + data.data.skipped,
+                            success: data.data.downloaded || 0,
+                            failed: data.data.failed || 0,
+                            skipped: data.data.skipped || 0,
+                            status: 'completed',
+                            message: data.message
+                        };
+                    }
+                } catch (e) {
+                    detailResult.value = { success: false, message: '请求失败: ' + e.message };
+                    progress.value.status = 'error';
+                    progress.value.message = e.message;
+                }
+
+                loading.value = false;
+            };
+
+            const loadSettings = async () => {
+                try {
+                    const res = await fetch('/api/settings');
+                    const data = await res.json();
+                    if (data.success) {
+                        settings.value = data.data;
+                    }
+                } catch (e) {
+                    console.error('加载设置失败', e);
+                }
+            };
+
+            const loadCookieStatus = async () => {
+                try {
+                    const res = await fetch('/api/cookie/status');
+                    const data = await res.json();
+                    if (data.success) {
+                        cookieStatus.value = data.data;
+                    }
+                } catch (e) {
+                    console.error('加载 Cookie 状态失败', e);
+                }
+            };
+
+            // Tab切换时重置状态
+            watch(activeTab, () => {
+                progress.value = { status: 'idle', total: 0, current: 0, success: 0, failed: 0, skipped: 0, message: '' };
+            });
+
+            onMounted(() => {
+                loadSettings();
+                loadCookieStatus();
+            });
+
+            return {
+                activeTab,
+                loading,
+                progress,
+                progressPercent,
+                cookieStatus,
+                settings,
+                accountForm,
+                detailForm,
+                accountInfo,
+                accountResult,
+                detailResult,
+                formatNumber,
+                clearAccountInfo,
+                getAccountInfo,
+                downloadAccount,
+                downloadDetail,
+            };
+        }
+    }).mount('#app');
+    </script>
+</body>
+</html>
