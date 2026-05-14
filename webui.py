@@ -56,6 +56,9 @@ async def main():
     )
     parameter.set_headers_cookie()
 
+    # 启用静态封面下载（缩略图）
+    parameter.static_cover = True
+
     # 检查 Cookie 状态
     if not parameter.cookie_state:
         console.warning("抖音 Cookie 未配置，部分功能可能无法正常使用")
