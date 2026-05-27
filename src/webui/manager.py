@@ -451,3 +451,53 @@ class WebUIManager(TikTok):
             "douyin_valid": self.parameter.cookie_state,
             "tiktok_valid": self.parameter.cookie_tiktok_state,
         }
+
+    async def get_accounts(self) -> list[dict]:
+        """获取 accounts_urls 列表"""
+        data = self.parameter.settings.read()
+        return data.get("accounts_urls", [])
+
+    async def save_accounts(self, accounts: list[dict]) -> None:
+        """保存 accounts_urls 列表到配置文件"""
+        data = self.parameter.settings.read()
+        data["accounts_urls"] = accounts
+        self.parameter.settings.update(data)
+
+    async def add_account(self, account: dict) -> dict:
+        """新增账号"""
+        accounts = await self.get_accounts()
+        new_account = {
+            "mark": account.get("mark", ""),
+            "url": account.get("url", ""),
+            "tab": account.get("tab", "post"),
+            "earliest": account.get("earliest", ""),
+            "latest": account.get("latest", ""),
+            "enable": account.get("enable", True),
+        }
+        accounts.append(new_account)
+        await self.save_accounts(accounts)
+        return new_account
+
+    async def update_account(self, index: int, account: dict) -> dict:
+        """更新账号"""
+        accounts = await self.get_accounts()
+        if index < 0 or index >= len(accounts):
+            raise IndexError(f"账号索引无效: {index}")
+        accounts[index] = {
+            "mark": account.get("mark", accounts[index].get("mark", "")),
+            "url": account.get("url", accounts[index].get("url", "")),
+            "tab": account.get("tab", accounts[index].get("tab", "post")),
+            "earliest": account.get("earliest", accounts[index].get("earliest", "")),
+            "latest": account.get("latest", accounts[index].get("latest", "")),
+            "enable": account.get("enable", accounts[index].get("enable", True)),
+        }
+        await self.save_accounts(accounts)
+        return accounts[index]
+
+    async def delete_account(self, index: int) -> None:
+        """删除账号"""
+        accounts = await self.get_accounts()
+        if index < 0 or index >= len(accounts):
+            raise IndexError(f"账号索引无效: {index}")
+        accounts.pop(index)
+        await self.save_accounts(accounts)

@@ -43,6 +43,16 @@ class SettingsUpdateRequest(BaseModel):
     download: bool = True
 
 
+class AccountRequest(BaseModel):
+    """账号请求"""
+    mark: str = ""
+    url: str = ""
+    tab: str = "post"
+    earliest: str = ""
+    latest: str = ""
+    enable: bool = True
+
+
 class ApiResponse(BaseModel):
     """统一 API 响应格式"""
     success: bool
@@ -445,6 +455,44 @@ class WebUIServer:
                 raise HTTPException(status_code=500, detail="Manager not initialized")
             data = self.manager.get_progress()
             return ApiResponse(success=True, message="获取进度成功", data=data)
+
+        @self.server.get("/api/accounts")
+        async def get_accounts():
+            """获取账号列表"""
+            if not self.manager:
+                raise HTTPException(status_code=500, detail="Manager not initialized")
+            data = await self.manager.get_accounts()
+            return ApiResponse(success=True, message="获取账号列表成功", data={"accounts": data})
+
+        @self.server.post("/api/accounts")
+        async def add_account(request: AccountRequest):
+            """新增账号"""
+            if not self.manager:
+                raise HTTPException(status_code=500, detail="Manager not initialized")
+            data = await self.manager.add_account(request.model_dump())
+            return ApiResponse(success=True, message="新增账号成功", data=data)
+
+        @self.server.put("/api/accounts/{index}")
+        async def update_account(index: int, request: AccountRequest):
+            """更新账号"""
+            if not self.manager:
+                raise HTTPException(status_code=500, detail="Manager not initialized")
+            try:
+                data = await self.manager.update_account(index, request.model_dump())
+            except IndexError as e:
+                raise HTTPException(status_code=400, detail=str(e))
+            return ApiResponse(success=True, message="更新账号成功", data=data)
+
+        @self.server.delete("/api/accounts/{index}")
+        async def delete_account(index: int):
+            """删除账号"""
+            if not self.manager:
+                raise HTTPException(status_code=500, detail="Manager not initialized")
+            try:
+                await self.manager.delete_account(index)
+            except IndexError as e:
+                raise HTTPException(status_code=400, detail=str(e))
+            return ApiResponse(success=True, message="删除账号成功")
 
     async def run_server(
         self,

@@ -363,6 +363,225 @@
             font-size: 12px;
             color: #666;
         }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        .data-table th {
+            text-align: left;
+            padding: 12px;
+            background: #f9f9f9;
+            color: #666;
+            font-weight: 500;
+            border-bottom: 2px solid #eee;
+        }
+
+        .data-table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #f0f0f0;
+            vertical-align: middle;
+        }
+
+        .data-table tr:hover td {
+            background: #fafafa;
+        }
+
+        .url-cell {
+            max-width: 260px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            font-size: 12px;
+            color: #999;
+        }
+
+        .btn-sm {
+            padding: 5px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .btn-edit {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .btn-edit:hover {
+            background: #bbdefb;
+        }
+
+        .btn-delete {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        .btn-delete:hover {
+            background: #ffcdd2;
+        }
+
+        .btn-add {
+            background: linear-gradient(135deg, #ff2d55 0%, #ff6b6b 100%);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            margin-bottom: 16px;
+        }
+
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 40px;
+            height: 22px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #ccc;
+            border-radius: 22px;
+            transition: 0.2s;
+        }
+
+        .toggle-slider::before {
+            content: "";
+            position: absolute;
+            height: 16px;
+            width: 16px;
+            left: 3px;
+            bottom: 3px;
+            background: white;
+            border-radius: 50%;
+            transition: 0.2s;
+        }
+
+        .toggle-switch input:checked + .toggle-slider {
+            background: #ff2d55;
+        }
+
+        .toggle-switch input:checked + .toggle-slider::before {
+            transform: translateX(18px);
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            width: 90%;
+            max-width: 520px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+
+        .btn-cancel {
+            background: #f5f5f5;
+            color: #666;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+        .btn-save {
+            background: linear-gradient(135deg, #ff2d55 0%, #ff6b6b 100%);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .confirm-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1001;
+        }
+
+        .confirm-box {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            max-width: 360px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .confirm-box p {
+            margin-bottom: 20px;
+            color: #333;
+            font-size: 14px;
+        }
+
+        .confirm-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .empty-hint {
+            font-size: 12px;
+            color: #999;
+        }
     </style>
 </head>
 <body>
@@ -382,6 +601,9 @@
                 </div>
                 <div class="tab" :class="{ active: activeTab === 'detail' }" @click="activeTab = 'detail'">
                     作品下载
+                </div>
+                <div class="tab" :class="{ active: activeTab === 'accounts' }" @click="activeTab = 'accounts'">
+                    账号管理
                 </div>
                 <div class="tab" :class="{ active: activeTab === 'settings' }" @click="activeTab = 'settings'">
                     设置
@@ -549,6 +771,110 @@
                 </div>
             </div>
 
+            <!-- Accounts Management Tab -->
+            <div v-if="activeTab === 'accounts'">
+                <button class="btn-add" @click="openAddModal">+ 新增账号</button>
+
+                <div class="table-container">
+                    <table class="data-table" v-if="accountsList.length > 0">
+                        <thead>
+                            <tr>
+                                <th>用户名</th>
+                                <th>作品类型</th>
+                                <th>启用</th>
+                                <th style="width: 120px;">操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="(account, index) in accountsList" :key="index">
+                                <td>
+                                    <a :href="account.url" target="_blank" style="color: #ff2d55; text-decoration: none;" :title="account.url">
+                                        {{ account.mark || '-' }}
+                                    </a>
+                                </td>
+                                <td>
+                                    <span v-if="account.tab === 'post'">发布作品</span>
+                                    <span v-else-if="account.tab === 'favorite'">喜欢作品</span>
+                                    <span v-else-if="account.tab === 'collection'">收藏作品</span>
+                                    <span v-else>{{ account.tab || '-' }}</span>
+                                </td>
+                                <td>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" :checked="account.enable" @change="toggleEnable(index)" />
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </td>
+                                <td>
+                                    <button class="btn-sm btn-edit" @click="openEditModal(index)">编辑</button>
+                                    <button class="btn-sm btn-delete" @click="confirmDelete(index)" style="margin-left: 6px;">删除</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="empty-state" v-else>
+                        <p>暂无账号配置</p>
+                        <p class="empty-hint">点击"新增账号"按钮添加账号链接</p>
+                    </div>
+                </div>
+
+                <!-- Edit/Add Modal -->
+                <div class="modal-overlay" v-if="showModal" @click.self="closeModal">
+                    <div class="modal-content">
+                        <div class="modal-title">{{ editingIndex >= 0 ? '编辑账号' : '新增账号' }}</div>
+
+                        <div class="form-group">
+                            <label class="form-label">标识名称</label>
+                            <input class="form-input" v-model="editingAccount.mark" placeholder="用于识别账号，如：张三" />
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">账号链接 <span style="color: #999; font-weight: 400;">(必填)</span></label>
+                            <input class="form-input" v-model="editingAccount.url" placeholder="https://www.douyin.com/user/MS4wLjABAAAA..." />
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">作品类型</label>
+                            <select class="form-select" v-model="editingAccount.tab">
+                                <option value="post">发布作品</option>
+                                <option value="favorite">喜欢作品</option>
+                                <option value="collection">收藏作品</option>
+                            </select>
+                        </div>
+                        <div class="inline-form">
+                            <div class="form-group">
+                                <label class="form-label">最早日期</label>
+                                <input class="form-input" type="date" v-model="editingAccount.earliest" />
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">最晚日期</label>
+                                <input class="form-input" type="date" v-model="editingAccount.latest" />
+                            </div>
+                        </div>
+                        <div class="settings-item" style="margin-top: 8px;">
+                            <span class="settings-label">启用</span>
+                            <label class="toggle-switch">
+                                <input type="checkbox" v-model="editingAccount.enable" />
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+
+                        <div class="modal-actions">
+                            <button class="btn-cancel" @click="closeModal">取消</button>
+                            <button class="btn-save" @click="saveAccount">保存</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Delete Confirmation -->
+                <div class="confirm-overlay" v-if="showConfirm" @click.self="showConfirm = false">
+                    <div class="confirm-box">
+                        <p>确定要删除账号「{{ deletingAccount?.mark || '未命名' }}」吗？<br><span class="empty-hint">此操作不可撤销</span></p>
+                        <div class="confirm-actions">
+                            <button class="btn-cancel" @click="showConfirm = false">取消</button>
+                            <button class="btn-delete btn-sm" @click="doDelete" style="padding: 10px 20px; font-size: 13px;">确认删除</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Settings Tab -->
             <div v-if="activeTab === 'settings'">
                 <div class="settings-grid">
@@ -672,6 +998,14 @@
             const accountInfo = ref(null);
             const accountResult = ref(null);
             const detailResult = ref(null);
+
+            const accountsList = ref([]);
+            const showModal = ref(false);
+            const editingAccount = ref(null);
+            const editingIndex = ref(-1);
+            const showConfirm = ref(false);
+            const deletingAccount = ref(null);
+            const deletingIndex = ref(-1);
 
             const progressPercent = computed(() => {
                 if (progress.value.total === 0) return '0%';
@@ -809,6 +1143,122 @@
                 loading.value = false;
             };
 
+            const loadAccounts = async () => {
+                try {
+                    const res = await fetch('/api/accounts');
+                    const data = await res.json();
+                    if (data.success) {
+                        accountsList.value = data.data.accounts || [];
+                    }
+                } catch (e) {
+                    console.error('加载账号列表失败', e);
+                }
+            };
+
+            const openAddModal = () => {
+                editingIndex.value = -1;
+                editingAccount.value = {
+                    mark: '',
+                    url: '',
+                    tab: 'post',
+                    earliest: '',
+                    latest: '',
+                    enable: true,
+                };
+                showModal.value = true;
+            };
+
+            const openEditModal = (index) => {
+                editingIndex.value = index;
+                editingAccount.value = { ...accountsList.value[index] };
+                showModal.value = true;
+            };
+
+            const closeModal = () => {
+                showModal.value = false;
+                editingAccount.value = null;
+                editingIndex.value = -1;
+            };
+
+            const saveAccount = async () => {
+                if (!editingAccount.value.url) {
+                    alert('请输入账号链接');
+                    return;
+                }
+                try {
+                    const body = editingAccount.value;
+                    if (editingIndex.value >= 0) {
+                        const res = await fetch(`/api/accounts/${editingIndex.value}`, {
+                            method: 'PUT',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(body),
+                        });
+                        const data = await res.json();
+                        if (data.success) {
+                            accountsList.value[editingIndex.value] = data.data;
+                        } else {
+                            alert(data.message);
+                        }
+                    } else {
+                        const res = await fetch('/api/accounts', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(body),
+                        });
+                        const data = await res.json();
+                        if (data.success) {
+                            accountsList.value.push(data.data);
+                        } else {
+                            alert(data.message);
+                        }
+                    }
+                } catch (e) {
+                    alert('保存失败: ' + e.message);
+                }
+                closeModal();
+            };
+
+            const toggleEnable = async (index) => {
+                const account = accountsList.value[index];
+                const updated = { ...account, enable: !account.enable };
+                try {
+                    const res = await fetch(`/api/accounts/${index}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(updated),
+                    });
+                    const data = await res.json();
+                    if (data.success) {
+                        accountsList.value[index] = data.data;
+                    }
+                } catch (e) {
+                    console.error('切换启用状态失败', e);
+                }
+            };
+
+            const confirmDelete = (index) => {
+                deletingIndex.value = index;
+                deletingAccount.value = accountsList.value[index];
+                showConfirm.value = true;
+            };
+
+            const doDelete = async () => {
+                try {
+                    const res = await fetch(`/api/accounts/${deletingIndex.value}`, { method: 'DELETE' });
+                    const data = await res.json();
+                    if (data.success) {
+                        accountsList.value.splice(deletingIndex.value, 1);
+                    } else {
+                        alert(data.message);
+                    }
+                } catch (e) {
+                    alert('删除失败: ' + e.message);
+                }
+                showConfirm.value = false;
+                deletingAccount.value = null;
+                deletingIndex.value = -1;
+            };
+
             const loadSettings = async () => {
                 try {
                     const res = await fetch('/api/settings');
@@ -833,14 +1283,18 @@
                 }
             };
 
-            // Tab切换时重置状态
-            watch(activeTab, () => {
+            // Tab切换时重置状态 / 加载数据
+            watch(activeTab, (newTab) => {
                 progress.value = { status: 'idle', total: 0, current: 0, success: 0, failed: 0, skipped: 0, message: '' };
+                if (newTab === 'accounts') {
+                    loadAccounts();
+                }
             });
 
             onMounted(() => {
                 loadSettings();
                 loadCookieStatus();
+                loadAccounts();
             });
 
             return {
@@ -860,6 +1314,19 @@
                 getAccountInfo,
                 downloadAccount,
                 downloadDetail,
+                accountsList,
+                showModal,
+                editingAccount,
+                editingIndex,
+                showConfirm,
+                deletingAccount,
+                openAddModal,
+                openEditModal,
+                closeModal,
+                saveAccount,
+                toggleEnable,
+                confirmDelete,
+                doDelete,
             };
         }
     }).mount('#app');
