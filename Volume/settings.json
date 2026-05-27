@@ -91,7 +91,7 @@
     "folder_mode": false,
     "music": false,
     "truncate": 50,
-    "storage_format": "",
+    "storage_format": "sql",
     "cookie": {
         "UIFID_TEMP": "749b770aa6a177ba6fbed42b6fcf8269d6ef3c63265bceaf64e3282dcaa6c732cc8bdec18d356dbc4ce8841c8c5f9290f17abb616ff2c492bbec256a3e10d3e10df2d44da68a7ffe21999c7e3771bd5e",
         "s_v_web_id": "verify_mlndce1x_mh8BD2YX_tWha_4j6c_A0i6_xloGBfg4AaBc",
