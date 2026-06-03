@@ -6,7 +6,7 @@
             "tab": "post",
             "earliest": "",
             "latest": "",
-            "enable": true
+            "enable": false
         },
         {
             "mark": "云姑娘",
@@ -14,7 +14,7 @@
             "tab": "post",
             "earliest": "",
             "latest": "",
-            "enable": true
+            "enable": false
         },
         {
             "mark": "云寳儿",
@@ -43,6 +43,30 @@
         {
             "mark": "33不吃菜",
             "url": "https://www.douyin.com/user/MS4wLjABAAAAlU4UQDiD_yHPr6fwkVTj9oPtsoTnRfPCYSeNUpIm12m1BCvwX-s3sahslYTiohmS",
+            "tab": "post",
+            "earliest": "",
+            "latest": "",
+            "enable": false
+        },
+        {
+            "mark": "Bigot.",
+            "url": "MS4wLjABAAAACvbWIwQopXlB9JS0zpjRQPheeGn1_YpAVGyMrYI1g_M",
+            "tab": "post",
+            "earliest": "",
+            "latest": "",
+            "enable": true
+        },
+        {
+            "mark": "Chantal",
+            "url": "MS4wLjABAAAAafgORXROmbrbfOJMdMtEHXscBkLzrKrULS7md3NawnA",
+            "tab": "post",
+            "earliest": "",
+            "latest": "",
+            "enable": false
+        },
+        {
+            "mark": "椰椰拿铁～",
+            "url": "MS4wLjABAAAAfEEUBjPyfOiZlklf950E2GjT6fKYE2GjCgflBR_nR45mELlhUVB367mlqFmf0DU2",
             "tab": "post",
             "earliest": "",
             "latest": "",
