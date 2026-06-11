@@ -6,7 +6,7 @@
       "tab": "post",
       "earliest": "",
       "latest": "",
-      "enable": true
+      "enable": false
     },
     {
       "mark": "云姑娘",
@@ -14,7 +14,7 @@
       "tab": "post",
       "earliest": "",
       "latest": "",
-      "enable": true
+      "enable": false
     },
     {
       "mark": "云寳儿",
@@ -22,7 +22,7 @@
       "tab": "post",
       "earliest": "",
       "latest": "",
-      "enable": true
+      "enable": false
     },
     {
       "mark": "喝牛奶的猫",
@@ -30,7 +30,7 @@
       "tab": "post",
       "earliest": "",
       "latest": "",
-      "enable": true
+      "enable": false
     },
     {
       "mark": "陈诗琳",
@@ -38,7 +38,7 @@
       "tab": "post",
       "earliest": "",
       "latest": "",
-      "enable": true
+      "enable": false
     },
     {
       "mark": "33不吃菜",
@@ -46,7 +46,7 @@
       "tab": "post",
       "earliest": "",
       "latest": "",
-      "enable": true
+      "enable": false
     },
     {
       "mark": "Bigot.",
@@ -54,7 +54,7 @@
       "tab": "post",
       "earliest": "",
       "latest": "",
-      "enable": true
+      "enable": false
     },
     {
       "mark": "Chantal",
@@ -62,11 +62,19 @@
       "tab": "post",
       "earliest": "",
       "latest": "",
-      "enable": true
+      "enable": false
     },
     {
       "mark": "椰椰拿铁～",
       "url": "https://www.douyin.com/user/MS4wLjABAAAAfEEUBjPyfOiZlklf950E2GjT6fKYE2GjCgflBR_nR45mELlhUVB367mlqFmf0DU2",
+      "tab": "post",
+      "earliest": "",
+      "latest": "",
+      "enable": false
+    },
+    {
+      "mark": "喜喜",
+      "url": "https://www.douyin.com/user/MS4wLjABAAAAUvwbHTQ32_uCXSTU5KtqklxyNw4f-2PPLVTARH99K2nuoOakenhcGVqLM8owA4TT",
       "tab": "post",
       "earliest": "",
       "latest": "",
@@ -107,11 +115,11 @@
   "owner_url_tiktok": null,
   "root": "",
   "folder_name": "Download",
-  "name_format": "create_time type nickname desc",
+  "name_format": "create_time id type",
   "desc_length": 64,
   "name_length": 128,
-  "date_format": "%Y-%m-%d %H:%M:%S",
-  "split": "-",
+  "date_format": "%Y-%m-%d_%H.%M.%S",
+  "split": "_",
   "folder_mode": false,
   "music": false,
   "truncate": 50,
